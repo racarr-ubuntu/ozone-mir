@@ -11,7 +11,8 @@
       'dependencies': [
         '<(DEPTH)/skia/skia.gyp:skia',
         '<(DEPTH)/base/third_party/dynamic_annotations/dynamic_annotations.gyp:dynamic_annotations',
-        'wayland/wayland.gyp:wayland_toolkit'
+        'wayland/wayland.gyp:wayland_toolkit',
+        'mir/mir.gyp:mir_toolkit'
       ],
       'include_dirs': [
         '..',
