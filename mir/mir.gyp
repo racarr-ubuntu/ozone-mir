@@ -26,6 +26,7 @@
       },
       'cflags': [
         '<!@(<(pkg-config) --cflags <(mir_packages))',
+        '-std=c++11'
       ],
       'direct_dependent_settings': {
         'cflags': [
@@ -50,8 +51,8 @@
         '../ui/ime/ime.gypi',
       ],
       'sources': [
-#         'mir_window.cc',
-#         'mir_window.h',
+         'mir_window.cc',
+         'mir_window.h',
          'mir_display.cc',
          'mir_display.h'
       ],
