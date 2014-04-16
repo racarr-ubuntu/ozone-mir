@@ -4,16 +4,23 @@
 # found in the LICENSE file.
 
 {
+  'variables': {
+    'conditions': [
+      ['sysroot!=""', {
+        'pkg-config': './pkg-config-wrapper "<(sysroot)" "<(target_arch)"',
+      }, {
+        'pkg-config': 'pkg-config'
+      }],
+    ],
+  },
+
   'targets': [
     {
       'target_name': 'mir_toolkit',
       'type': 'static_library',
       'variables': {
-        'MIR_VERSION': '1.2.0',
-        'MESA_VERSION': '9.1.3',
         'mir_packages': [
-          'egl >= <(MESA_VERSION)',
-          'mirclient >= <(MIR_VERSION)',
+          'mirclient',
           'xkbcommon',
         ],
       },
@@ -38,11 +45,15 @@
       ],
       'include_dirs': [
         '../..',
-        '<(DEPTH)/third_party/khronos',
+      ],
+      'includes': [
+        '../ui/ime/ime.gypi',
       ],
       'sources': [
-        'mir_display.cc',
-        'mir_display.h'
+#         'mir_window.cc',
+#         'mir_window.h',
+         'mir_display.cc',
+         'mir_display.h'
       ],
     },
   ]
