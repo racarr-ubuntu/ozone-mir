@@ -131,6 +131,7 @@ gfx::Rect om::Window::GetBounds() const {
   MirSurfaceParameters params;
   mir_surface_get_parameters(surface_, &params);
   // TODO: Why do we want X/Y ~racarr
+  // TODO: Does chromium require any sort of guarantees on X/Y for relative windos?
   return gfx::Rect(0,0, params.width, params.height);
 }
 
@@ -148,12 +149,9 @@ void om::Window::StopProcessingEvents() {
 void om::Window::HandleEvent(MirSurface *surface, MirEvent const *ev, void *context) {
   om::Window *w = static_cast<om::Window*>(context);
     
-  // TODO: It would be nice if Mir let us unregister the callback.
+  // TODO: Maybe it would be nice if Mir let us unregister the callback.
   if (w->processing_events_ == false)
     return;
-  // TODO: Ugly ~racarr
-  ui::EventConverterOzoneWayland  *sink = ui::EventFactoryOzoneWayland::GetInstance()
-      ->EventConverter();
 
   switch(ev->type)
   {
@@ -161,10 +159,8 @@ void om::Window::HandleEvent(MirSurface *surface, MirEvent const *ev, void *cont
       w->motion_event_handler_->handle_motion_event(ev->motion);
       break;
   case mir_event_type_key:
-  {
       w->key_event_handler_->handle_key_event(ev->key);
       break;
-  }
   break;
   default:
     break;

@@ -30,6 +30,10 @@ protected:
 private:
   ui::EventConverterOzoneWayland* const sink;
   unsigned const handle;
+  
+  // We only support the basic 3 buttons in ozone...
+  static int const num_buttons = 3;
+  bool button_depressed[num_buttons];
 };
 
 }  // namespace ozonemir
