@@ -59,7 +59,7 @@ void om::Display::ShutdownHardware() {
 }
 
 intptr_t om::Display::GetNativeDisplay() {
-  DCHECK(connection_);
+  DCHECK(mir_connection_is_valid(connection_));
   return reinterpret_cast<intptr_t>(mir_connection_get_egl_native_display(connection_));
 }
 
@@ -68,8 +68,11 @@ void om::Display::FlushDisplay() {
 }
 
 gfx::AcceleratedWidget om::Display::GetAcceleratedWidget() {
-  static int opaque_handle = 0; // TODO: Threadsafe?
+  static int opaque_handle = 0; // TODO: Can this be called from multiple threads.
   opaque_handle++;
+
+  // Note in the host process om::Display is not the WindowStateChangeHandler
+  // (as InitializeHardware is never called) rather the ozone IPC channel is.
   ui::WindowStateChangeHandler::GetInstance()->SetWidgetState(opaque_handle,
                                                               ui::CREATE,
                                                               0,
@@ -82,8 +85,7 @@ gfx::AcceleratedWidget om::Display::RealizeAcceleratedWidget(
     gfx::AcceleratedWidget w) {
   StartProcessingEvents();
 
-  // May not be needed in Mir...we would need to use the state change handler.
-  DCHECK(connection_);
+  DCHECK(mir_connection_is_valid(connection_));
   auto widget = GetWidget(w);
   DCHECK(widget);
     
@@ -105,17 +107,18 @@ void om::Display::DestroyWidget(gfx::AcceleratedWidget w) {
 
 // See comment in wayland/display.cc
 void om::Display::LookAheadOutputGeometry() {
-  ui::EventFactoryOzoneWayland* event_factory =
-    ui::EventFactoryOzoneWayland::GetInstance();
-  DCHECK(event_factory->GetOutputChangeObserver());
+  auto output_observer =
+    ui::EventFactoryOzoneWayland::GetInstance()->GetOutputChangeObserver();
+  DCHECK(output_observer);
 
   // TODO: Implement for real.
   unsigned width = 1024;
   unsigned height = 1024;
-  event_factory->GetOutputChangeObserver()->OnOutputSizeChanged(width, height);
+  output_observer->OnOutputSizeChanged(width, height);
 }
 
 void om::Display::Terminate() {
+  DCHECK(mir_connection_is_valid(connection_));
   mir_connection_release(connection_);
 }
 
@@ -173,6 +176,8 @@ void om::Display::SetWidgetState(unsigned w, ui::WidgetState state, unsigned wid
   case ui::FULLSCREEN:
     {
       om::Window* widget = GetWidget(w);
+      DCHECK(widget);
+
       widget->SetFullscreen();
       widget->Resize(width, height);
       break;
@@ -180,18 +185,24 @@ void om::Display::SetWidgetState(unsigned w, ui::WidgetState state, unsigned wid
   case ui::MAXIMIZED:
     {
       om::Window* widget = GetWidget(w);
+      DCHECK(widget);
+
       widget->Maximize();
       break;
     }
   case ui::MINIMIZED:
     {
       om::Window* widget = GetWidget(w);
+      DCHECK(widget);
+
       widget->Minimize();
       break;
     }
   case ui::RESTORE:
     {
       om::Window* widget = GetWidget(w);
+      DCHECK(widget);
+
       widget->Restore();
       widget->Resize(width, height);
       break;
@@ -212,6 +223,7 @@ void om::Display::SetWidgetState(unsigned w, ui::WidgetState state, unsigned wid
     {
       om::Window* window = GetWidget(w);
       DCHECK(window);
+
       window->Resize(width, height);
       break;
     }
