@@ -54,7 +54,11 @@
          'mir_window.cc',
          'mir_window.h',
          'mir_display.cc',
-         'mir_display.h'
+         'mir_display.h',
+         'mir_pointer.cc',
+         'mir_pointer.h',
+         'mir_keyboard.cc',
+         'mir_keyboard.h'
       ],
     },
   ]

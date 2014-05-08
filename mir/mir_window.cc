@@ -4,6 +4,8 @@
 // found in the LICENSE file.
 
 #include "ozone/mir/mir_window.h"
+#include "ozone/mir/mir_pointer.h"
+#include "ozone/mir/mir_keyboard.h"
 
 #include "base/message_loop/message_pump_ozone.h"
 
@@ -35,7 +37,9 @@ om::Window::Window(MirConnection *connection, unsigned handle)
   : connection_(connection),
     handle_(handle),
     surface_(0),
-    processing_events_(false) {
+    processing_events_(false),
+    motion_event_handler_(new om::Pointer(ui::EventFactoryOzoneWayland::GetInstance()->EventConverter(), handle)),
+    key_event_handler_(new om::Keyboard(ui::EventFactoryOzoneWayland::GetInstance()->EventConverter(), handle)) {
 
   MirSurfaceParameters parameters = {
       "Ozone", // TODO: Mir needs to support changing window title
@@ -53,6 +57,8 @@ om::Window::~Window() {
   DCHECK(mir_surface_is_valid(surface_));
 
   mir_surface_release_sync(surface_);
+
+  delete motion_event_handler_;
 }
 
 void om::Window::SetWindowType(ui::WidgetType type) {
@@ -139,25 +145,6 @@ void om::Window::StopProcessingEvents() {
   processing_events_ = false;
 }
 
-namespace
-{
-uint32_t TranslateMirModifiers(unsigned mir_modifiers)
-{
-  uint32_t ui_m = 0;
-  
-  if (mir_modifiers & mir_key_modifier_shift)
-    ui_m |= ui::EF_SHIFT_DOWN;
-  if (mir_modifiers & mir_key_modifier_ctrl)
-    ui_m |= ui::EF_CONTROL_DOWN;
-  if (mir_modifiers & mir_key_modifier_meta)
-    ui_m |= ui::EF_ALT_DOWN;
-  if (mir_modifiers & mir_key_modifier_caps_lock)
-    ui_m |= ui::EF_CAPS_LOCK_DOWN;
-  
-  return ui_m;
-}
-}
-
 void om::Window::HandleEvent(MirSurface *surface, MirEvent const *ev, void *context) {
   om::Window *w = static_cast<om::Window*>(context);
     
@@ -171,48 +158,12 @@ void om::Window::HandleEvent(MirSurface *surface, MirEvent const *ev, void *cont
   switch(ev->type)
   {
   case mir_event_type_motion:
-  {
-    MirMotionEvent const& mev = ev->motion;
-    if (mev.action == mir_motion_action_down ||
-        mev.action == mir_motion_action_up) {
-      ui::EventFlags flags = (ui::EventFlags)0;
-      // TODO: Modifiers
-      if (mev.button_state == mir_motion_button_primary) {
-        flags = ui::EF_LEFT_MOUSE_BUTTON;
-      }
-      else if (mev.button_state == mir_motion_button_secondary) {
-        flags = ui::EF_RIGHT_MOUSE_BUTTON; // TODO: Correct? ~racarr
-      }
-      else if (mev.button_state == mir_motion_button_tertiary) {
-        flags = ui::EF_MIDDLE_MOUSE_BUTTON;
-      }
-
-      ui::EventType type = mev.action == mir_motion_action_down ? ui::ET_MOUSE_PRESSED : ui::ET_MOUSE_RELEASED;
-
-      sink->ButtonNotify(w->Handle(), type, 
-                         flags, mev.pointer_coordinates[0].x,
-                         mev.pointer_coordinates[0].y);
-    }
-    else if (mev.action == mir_motion_action_move) {
-      sink->MotionNotify(mev.pointer_coordinates[0].x,
-                         mev.pointer_coordinates[0].y);
-    }
-    else if (mev.action == mir_motion_action_hover_enter) {
-      sink->PointerEnter(w->Handle(), mev.pointer_coordinates[0].x, mev.pointer_coordinates[0].y);
-    }
-    else if (mev.action == mir_motion_action_hover_exit) {
-      sink->PointerLeave(w->Handle(), mev.pointer_coordinates[0].x, mev.pointer_coordinates[0].y);
-    }
-  }
+      w->motion_event_handler_->handle_motion_event(ev->motion);
+      break;
   case mir_event_type_key:
   {
-    MirKeyEvent const& kev = ev->key;
-    // TODO: Translate modifiers ~racarr
-    ui::EventType type = kev.action == mir_key_action_down ? ui::ET_KEY_PRESSED : ui::ET_KEY_RELEASED;
-    
-    // TODO: Renable normalization
-    sink->KeyNotify(type, ev->key.key_code,
-                    TranslateMirModifiers(ev->key.modifiers));
+      w->key_event_handler_->handle_key_event(ev->key);
+      break;
   }
   break;
   default:
