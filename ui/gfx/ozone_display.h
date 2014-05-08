@@ -21,6 +21,9 @@ class OZONE_WAYLAND_EXPORT OzoneDisplay {
 
   // Sets the implementation delegate. Ownership is retained by the caller.
   static void SetInstance(OzoneDisplay* instance);
+  
+  // Returns the EGL_PLATFORM variable for use ith mesa.
+  static char const* GetEGLPlatform();
 
   virtual SurfaceFactoryOzone::HardwareState InitializeHardware() = 0;
   virtual void ShutdownHardware() = 0;

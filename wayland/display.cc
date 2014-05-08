@@ -365,3 +365,7 @@ void WaylandDisplay::LookAheadOutputGeometry() {
 }
 
 }  // namespace ozonewayland
+
+char const* gfx::OzoneDisplay::GetEGLPlatform() {
+  return "wayland";
+}

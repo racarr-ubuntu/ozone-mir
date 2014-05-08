@@ -50,7 +50,7 @@ bool SurfaceFactoryWayland::LoadEGLGLES2Bindings(
   // first platform listed in --with-egl-platforms during compilation. Thus, we
   // ensure here that wayland is set as the native platform. However, we don't
   // override the EGL_PLATFORM value in case it has already been set.
-  setenv("EGL_PLATFORM", "mir", 0);
+  setenv("EGL_PLATFORM", gfx::OzoneDisplay::GetEGLPlatform(), 0);
   base::NativeLibraryLoadError error;
   base::NativeLibrary gles_library = base::LoadNativeLibrary(
     base::FilePath("libGLESv2.so.2"), &error);
