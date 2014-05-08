@@ -288,17 +288,17 @@ xkb_keysym_t NormalizeKeysym(xkb_keysym_t keysym)
 
 // TODO: Is handle really needed?
 om::Keyboard::Keyboard(ui::EventConverterOzoneWayland *sink, unsigned handle)
-    : sink(sink),
-      handle(handle) {
-}
+  : sink(sink),
+    handle(handle) {
+    }
 
 om::Keyboard::~Keyboard() {
 }
 
 void om::Keyboard::handle_key_event(MirKeyEvent const& kev) {
-    ui::EventType type = kev.action == mir_key_action_down ? ui::ET_KEY_PRESSED : ui::ET_KEY_RELEASED;
+  ui::EventType type = kev.action == mir_key_action_down ? ui::ET_KEY_PRESSED : ui::ET_KEY_RELEASED;
     
-    sink->KeyNotify(type, NormalizeKeysym(kev.key_code),
-                    TranslateMirModifiers(kev.modifiers));
+  sink->KeyNotify(type, NormalizeKeysym(kev.key_code),
+                  TranslateMirModifiers(kev.modifiers));
 
 }
