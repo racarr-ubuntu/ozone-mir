@@ -405,3 +405,7 @@ void WaylandDisplay::DisplayHandleGlobal(void *data,
 }
 
 }  // namespace ozonewayland
+
+char const* gfx::OzoneDisplay::GetEGLPlatform() {
+  return "wayland";
+}

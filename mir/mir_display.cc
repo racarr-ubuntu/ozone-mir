@@ -243,3 +243,7 @@ void om::Display::SetWidgetAttributes(unsigned w, unsigned parent,
   auto widget = GetWidget(w);
   widget->SetWindowType(type);
 }
+
+char const* gfx::OzoneDisplay::GetEGLPlatform() {
+  return "mir";
+}
