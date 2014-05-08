@@ -40,6 +40,8 @@ om::Window::Window(MirConnection *connection, unsigned handle)
     processing_events_(false),
     motion_event_handler_(new om::Pointer(ui::EventFactoryOzoneWayland::GetInstance()->EventConverter(), handle)),
     key_event_handler_(new om::Keyboard(ui::EventFactoryOzoneWayland::GetInstance()->EventConverter(), handle)) {
+  
+  DCHECK(mir_connection_is_valid(connection_));
 
   MirSurfaceParameters parameters = {
       "Ozone", // TODO: Mir needs to support changing window title
@@ -63,7 +65,7 @@ om::Window::~Window() {
 }
 
 void om::Window::SetWindowType(ui::WidgetType type) {
-  DCHECK(surface_);
+  DCHECK(mir_surface_is_valid(surface_));
 
   switch (type)
   {
@@ -127,7 +129,6 @@ void om::Window::Resize(unsigned width, unsigned height) {
 }
 
 gfx::Rect om::Window::GetBounds() const {
-  LOG(INFO) << __PRETTY_FUNCTION__;
   DCHECK(mir_surface_is_valid(surface_));
   MirSurfaceParameters params;
   mir_surface_get_parameters(surface_, &params);
@@ -169,6 +170,8 @@ void om::Window::HandleEvent(MirSurface *surface, MirEvent const *ev, void *cont
 }
 
 void om::Window::NotifyResize() {
+  DCHECK(mir_surface_is_valid(surface_));
+
   MirSurfaceParameters params;
   mir_surface_get_parameters(surface_, &params);
 
