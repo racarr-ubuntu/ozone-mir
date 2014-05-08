@@ -45,9 +45,9 @@ om::Display::InitializeHardware() {
   ui::IMEStateChangeHandler::SetInstance(new NullIMEStateChangeHandler);
     
   connection_ = mir_connect_sync(NULL, "Chromium");
-  if (!connection_) {
-    // TODO: Mir error
-    LOG(ERROR) << "SurfaceFactoryMir failed to initialize connection to remote Mir Server";
+  if (!mir_connection_is_valid(connection_)) {
+    LOG(ERROR) << "SurfaceFactoryMir failed to initialize connection to remote Mir Server: "
+      << mir_connection_get_error_message(connection_);
     return gfx::SurfaceFactoryOzone::FAILED;
   }
   
