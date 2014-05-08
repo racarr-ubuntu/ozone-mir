@@ -112,7 +112,7 @@ unsigned om::Window::Handle() const {
 }
 
 void om::Window::RealizeAcceleratedWidget() {
-    // TODO: In Mir we do not have an explicit realize step...
+  // TODO: In Mir we do not have an explicit realize step...
 }
 
 intptr_t om::Window::egl_window() {
@@ -156,11 +156,11 @@ void om::Window::HandleEvent(MirSurface *surface, MirEvent const *ev, void *cont
   switch(ev->type)
   {
   case mir_event_type_motion:
-      w->motion_event_handler_->handle_motion_event(ev->motion);
-      break;
+    w->motion_event_handler_->handle_motion_event(ev->motion);
+    break;
   case mir_event_type_key:
-      w->key_event_handler_->handle_key_event(ev->key);
-      break;
+    w->key_event_handler_->handle_key_event(ev->key);
+    break;
   break;
   default:
     break;
