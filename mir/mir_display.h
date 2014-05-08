@@ -61,7 +61,7 @@ private:
   void CreateWindow(unsigned w);
   void DestroyWindow(unsigned w);
 
-  bool WindowsExist();
+  bool AnyWindowsExist();
 
   void ForEachWidget(std::function<void(Window*)> const& exec);
   

@@ -164,7 +164,7 @@ void om::Display::StopProcessingEvents() {
         });
 }
 
-bool om::Display::WindowsExist() {
+bool om::Display::AnyWindowsExist() {
     return !widgets.empty();
 }
 
@@ -223,7 +223,7 @@ void om::Display::SetWidgetState(unsigned w, ui::WidgetState state, unsigned wid
     case ui::DESTROYED:
     {
       DestroyWindow(w);
-      if (WindowsExist())
+      if (!AnyWindowsExist())
         StopProcessingEvents();
       break;
     }
