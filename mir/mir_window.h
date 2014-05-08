@@ -14,6 +14,8 @@
 #include <mir_toolkit/mir_client_library.h>
 
 namespace ozonemir {
+class Pointer;
+class Keyboard;
 
 class Window {
 public:
@@ -51,6 +53,9 @@ private:
   MirSurface *surface_;
   
   bool processing_events_;
+
+  ozonemir::Pointer *motion_event_handler_;
+  ozonemir::Keyboard *key_event_handler_;
 
   static void HandleEvent(MirSurface *surface, MirEvent const* ev, void *context);
 
