@@ -59,6 +59,7 @@ om::Window::~Window() {
   mir_surface_release_sync(surface_);
 
   delete motion_event_handler_;
+  delete key_event_handler_;
 }
 
 void om::Window::SetWindowType(ui::WidgetType type) {
