@@ -13,8 +13,10 @@
 
 #include <mutex>
 #include <map>
+#include <functional>
 
 namespace ozonemir {
+class Window;
 
 class Display : public gfx::OzoneDisplay, public ui::WindowStateChangeHandler {
 public:
@@ -52,7 +54,20 @@ private:
   MirConnection *connection_;
 
   std::mutex widget_map_guard;
-  std::map<unsigned, MirSurface*> widgets;
+  std::map<unsigned, Window*> widgets;
+  
+  Window* GetWidget(unsigned w);
+  void CreateWindow(unsigned w);
+  void DestroyWindow(unsigned w);
+
+  bool WindowsExist();
+
+  void ForEachWidget(std::function<void(Window*)> const& exec);
+  
+  void StartProcessingEvents();
+  void StopProcessingEvents();
+
+
 
   DISALLOW_COPY_AND_ASSIGN(Display);
 };

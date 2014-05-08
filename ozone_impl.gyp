@@ -11,7 +11,7 @@
       'dependencies': [
         '<(DEPTH)/skia/skia.gyp:skia',
         '<(DEPTH)/base/third_party/dynamic_annotations/dynamic_annotations.gyp:dynamic_annotations',
-        'wayland/wayland.gyp:wayland_toolkit',
+#        'wayland/wayland.gyp:wayland_toolkit',
         'mir/mir.gyp:mir_toolkit'
       ],
       'include_dirs': [
@@ -24,10 +24,15 @@
       'defines': [
         'OZONE_WAYLAND_IMPLEMENTATION',
       ],
+      'cflags': [
+        '-std=c++11'
+      ],
       'sources': [
         'platform/ozone_export_wayland.h',
-        'platform/ozone_platform_wayland.cc',
-        'platform/ozone_platform_wayland.h',
+#        'platform/ozone_platform_wayland.cc',
+#        'platform/ozone_platform_wayland.h',
+       'platform/ozone_platform_mir.cc',
+        'platform/ozone_platform_mir.h',
       ],
     },
   ]
