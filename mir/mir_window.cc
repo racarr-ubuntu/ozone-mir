@@ -106,7 +106,7 @@ unsigned om::Window::Handle() const {
 }
 
 void om::Window::RealizeAcceleratedWidget() {
-  // TODO: We do this at creation in mir world with no explicit realize step ~racarr
+    // TODO: In Mir we do not have an explicit realize step...
 }
 
 intptr_t om::Window::egl_window() {
@@ -175,7 +175,8 @@ void om::Window::HandleEvent(MirSurface *surface, MirEvent const *ev, void *cont
     MirMotionEvent const& mev = ev->motion;
     if (mev.action == mir_motion_action_down ||
         mev.action == mir_motion_action_up) {
-      ui::EventFlags flags;
+      ui::EventFlags flags = (ui::EventFlags)0;
+      // TODO: Modifiers
       if (mev.button_state == mir_motion_button_primary) {
         flags = ui::EF_LEFT_MOUSE_BUTTON;
       }
