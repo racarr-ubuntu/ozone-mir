@@ -11,8 +11,30 @@
       'dependencies': [
         '<(DEPTH)/skia/skia.gyp:skia',
         '<(DEPTH)/base/third_party/dynamic_annotations/dynamic_annotations.gyp:dynamic_annotations',
-#        'wayland/wayland.gyp:wayland_toolkit',
-        'mir/mir.gyp:mir_toolkit'
+      ],
+      'variables': { 'use_ozone_mir%' : 1, 'use_ozone_wayland%' : 0},
+      'conditions': [
+        ['use_ozone_mir==1', {            
+          'dependencies': [ 'mir/mir.gyp:mir_toolkit'
+          ],
+          'sources': [
+              'platform/ozone_export_wayland.h',
+              'platform/ozone_platform_mir.cc',
+              'platform/ozone_platform_mir.h',
+           ],
+           'cflags': [
+              '-std=c++11'
+           ],
+        }],
+        ['use_ozone_wayland==1', {
+          'dependencies': [ 'wayland/wayland.gyp:wayland_toolkit'
+          ],
+          'sources': [
+              'platform/ozone_export_wayland.h',
+              'platform/ozone_platform_wayland.cc',
+              'platform/ozone_platform_wayland.h',
+           ],
+        }],          
       ],
       'include_dirs': [
         '..',
@@ -23,16 +45,6 @@
       ],
       'defines': [
         'OZONE_WAYLAND_IMPLEMENTATION',
-      ],
-      'cflags': [
-        '-std=c++11'
-      ],
-      'sources': [
-        'platform/ozone_export_wayland.h',
-#        'platform/ozone_platform_wayland.cc',
-#        'platform/ozone_platform_wayland.h',
-       'platform/ozone_platform_mir.cc',
-        'platform/ozone_platform_mir.h',
       ],
     },
   ]
