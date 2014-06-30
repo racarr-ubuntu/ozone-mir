@@ -1,5 +1,0 @@
-include_rules = [
-  "+media",
-  "+media/ozone",
-  "+third_party/libva",
-]

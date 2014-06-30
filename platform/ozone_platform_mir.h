@@ -10,8 +10,7 @@
 #include "ozone/ui/desktop_aura/desktop_factory_wayland.h"
 #endif
 #include "ozone/ui/events/event_factory_ozone_wayland.h"
-#include "ozone/ui/gfx/surface_factory_wayland.h"
-#include "ozone/ui/ime/input_method_context_factory_wayland.h"
+//#include "ozone/ui/ime/input_method_context_factory_wayland.h"
 #include "ozone/mir/mir_display.h"
 #include "ui/base/cursor/ozone/cursor_factory_ozone.h"
 #include "ui/ozone/ozone_platform.h"
@@ -28,15 +27,14 @@ class OzonePlatformMir : public OzonePlatform {
 
   virtual gfx::SurfaceFactoryOzone* GetSurfaceFactoryOzone() OVERRIDE;
   virtual ui::EventFactoryOzone* GetEventFactoryOzone() OVERRIDE;
-  virtual ui::InputMethodContextFactoryOzone*
-      GetInputMethodContextFactoryOzone() OVERRIDE;
   virtual ui::CursorFactoryOzone* GetCursorFactoryOzone() OVERRIDE;
+  
+  void InitializeUI() OVERRIDE;
+  void InitializeGPU() OVERRIDE;
 
  private:
   ozonemir::Display hardware_display_;
-  gfx::SurfaceFactoryWayland surface_factory_ozone_;
   ui::EventFactoryOzoneWayland event_factory_ozone_;
-  ui::InputMethodContextFactoryWayland input_method_context_factory_;
   ui::CursorFactoryOzoneWayland cursor_factory_ozone_;
 #if defined(TOOLKIT_VIEWS) && !defined(OS_CHROMEOS)
   views::DesktopFactoryWayland desktop_factory_ozone_;

@@ -7,17 +7,20 @@
 #include "ozone/mir/mir_pointer.h"
 #include "ozone/mir/mir_keyboard.h"
 
-#include "base/message_loop/message_pump_ozone.h"
-
 #include "base/memory/scoped_ptr.h"
 #include "ui/events/event.h"
 
 #include "content/child/child_thread.h"
 #include "content/child/child_process.h"
 
+#include "ui/gfx/ozone/surface_ozone_egl.h"
+
 #include "ozone/ui/events/event_factory_ozone_wayland.h"
 #include "ozone/ui/events/event_converter_ozone_wayland.h"
 // TODO: #include "ozone/ui/ime/keyboard_engine_xkb.h"
+
+// TODO: This is in the wrong place.
+#include "ozone/ui/gfx/vsync_provider_wayland.h"
 
 namespace om = ozonemir;
 
@@ -115,11 +118,15 @@ unsigned om::Window::Handle() const {
 }
 
 void om::Window::RealizeAcceleratedWidget() {
-  // TODO: In Mir we do not have an explicit realize step...
+// TODO: Remove?
 }
 
 intptr_t om::Window::egl_window() {
   DCHECK(mir_surface_is_valid(surface_));
+  
+  // We use this as like a realize step..for whatever reason
+  StartProcessingEvents();
+
   return reinterpret_cast<intptr_t>(mir_surface_get_egl_native_window(surface_));
 }
 
@@ -181,4 +188,47 @@ void om::Window::NotifyResize() {
   DCHECK(sink);
 
   sink->WindowResized(Handle(), params.width, params.height);
+}
+
+namespace
+{
+class SurfaceOzoneMir : public gfx::SurfaceOzoneEGL
+{
+public:
+    explicit SurfaceOzoneMir(om::Window *w) :
+        window(w)
+    {
+    }
+    
+    intptr_t GetNativeWindow()
+    {
+        DCHECK(window);
+        return window->egl_window();
+    }
+
+    bool ResizeNativeWindow(const gfx::Size& viewport_size)
+    {
+        DCHECK(window);
+        window->Resize(viewport_size.width(), viewport_size.height());
+    }
+
+    bool OnSwapBuffers()
+    {
+        return true; // ?
+    }
+
+    scoped_ptr<gfx::VSyncProvider> CreateVSyncProvider()
+    {
+        // This does nothing for now so we just use waylands last stub.
+        return scoped_ptr<gfx::VSyncProvider>(new gfx::WaylandSyncProvider());        
+    }
+
+private:
+    // Consider using shared_ptr or id + display instance
+    om::Window *window; // TODO: Ownership?
+};
+}
+
+scoped_ptr<gfx::SurfaceOzoneEGL> om::Window::CreateOzoneEGLSurface() {
+    return make_scoped_ptr<gfx::SurfaceOzoneEGL>(new SurfaceOzoneMir(this));
 }

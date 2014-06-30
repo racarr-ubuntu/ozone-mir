@@ -14,7 +14,7 @@ namespace ozonewayland {
 
 // Provides EGL support for SurfaceOzone.
 class SurfaceOzoneWayland : public gfx::SurfaceOzoneEGL {
- public:
+public:
   explicit SurfaceOzoneWayland(unsigned handle);
   virtual ~SurfaceOzoneWayland() OVERRIDE;
 

@@ -8,6 +8,7 @@
 
 #include "ui/gfx/rect.h"
 #include "base/strings/string16.h"
+#include "ui/gfx/ozone/surface_ozone_egl.h" // TODO: Forward decl?
 
 #include "ozone/ui/events/window_constants.h"
 
@@ -42,6 +43,8 @@ public:
   void SetWindowTitle(const base::string16& title);
 
   void SetWindowType(ui::WidgetType type);
+  
+  scoped_ptr<gfx::SurfaceOzoneEGL> CreateOzoneEGLSurface();
 
 protected:
   DISALLOW_COPY_AND_ASSIGN(Window);

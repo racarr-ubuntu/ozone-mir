@@ -11,22 +11,25 @@ OzonePlatformMir::OzonePlatformMir() {}
 OzonePlatformMir::~OzonePlatformMir() {}
 
 gfx::SurfaceFactoryOzone* OzonePlatformMir::GetSurfaceFactoryOzone() {
-  return &surface_factory_ozone_;
+    return &hardware_display_;
 }
 
 ui::EventFactoryOzone* OzonePlatformMir::GetEventFactoryOzone() {
   return &event_factory_ozone_;
 }
 
-ui::InputMethodContextFactoryOzone*
-OzonePlatformMir::GetInputMethodContextFactoryOzone() {
-  return &input_method_context_factory_;
-}
-
 ui::CursorFactoryOzone* OzonePlatformMir::GetCursorFactoryOzone() {
   return &cursor_factory_ozone_;
 }
 
-OzonePlatform* CreateOzonePlatformWayland() { return new OzonePlatformMir; }
+void OzonePlatformMir::InitializeUI() {
+    // TODO
+}
 
+void OzonePlatformMir::InitializeGPU() {
+    // TODO
+}
+
+OzonePlatform* CreateOzonePlatformWayland() { return new OzonePlatformMir; }
+    
 }  // namespace ui
