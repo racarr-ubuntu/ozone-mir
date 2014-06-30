@@ -195,40 +195,35 @@ namespace
 class SurfaceOzoneMir : public gfx::SurfaceOzoneEGL
 {
 public:
-    explicit SurfaceOzoneMir(om::Window *w) :
-        window(w)
-    {
-    }
-    
-    intptr_t GetNativeWindow()
-    {
-        DCHECK(window);
-        return window->egl_window();
-    }
+  explicit SurfaceOzoneMir(om::Window *w) :
+      window(w) {
+  }
+  
+  intptr_t GetNativeWindow() {
+      DCHECK(window);
+      return window->egl_window();
+  }
 
-    bool ResizeNativeWindow(const gfx::Size& viewport_size)
-    {
-        DCHECK(window);
-        window->Resize(viewport_size.width(), viewport_size.height());
-    }
+  bool ResizeNativeWindow(const gfx::Size& viewport_size) {
+      DCHECK(window);
+      window->Resize(viewport_size.width(), viewport_size.height());
+  }
 
-    bool OnSwapBuffers()
-    {
-        return true; // ?
-    }
+  bool OnSwapBuffers() {
+      return true; // ?
+  }
 
-    scoped_ptr<gfx::VSyncProvider> CreateVSyncProvider()
-    {
-        // This does nothing for now so we just use waylands last stub.
-        return scoped_ptr<gfx::VSyncProvider>(new gfx::WaylandSyncProvider());        
-    }
+  scoped_ptr<gfx::VSyncProvider> CreateVSyncProvider() {
+      // This does nothing for now so we just use waylands last stub.
+      return scoped_ptr<gfx::VSyncProvider>(new gfx::WaylandSyncProvider());        
+  }
 
 private:
-    // Consider using shared_ptr or id + display instance
-    om::Window *window; // TODO: Ownership?
+  // Consider using shared_ptr or id + display instance
+  om::Window *window; // TODO: Ownership?
 };
 }
 
 scoped_ptr<gfx::SurfaceOzoneEGL> om::Window::CreateOzoneEGLSurface() {
-    return make_scoped_ptr<gfx::SurfaceOzoneEGL>(new SurfaceOzoneMir(this));
+  return make_scoped_ptr<gfx::SurfaceOzoneEGL>(new SurfaceOzoneMir(this));
 }

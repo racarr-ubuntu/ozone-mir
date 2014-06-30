@@ -91,30 +91,6 @@ scoped_ptr<gfx::SurfaceOzoneEGL> om::Display::CreateEGLSurfaceForWidget(
     return widget->CreateOzoneEGLSurface();
 }                                       
 
-/*gfx::AcceleratedWidget om::Display::RealizeAcceleratedWidget(
-    gfx::AcceleratedWidget w) {
-  StartProcessingEvents();
-
-  DCHECK(mir_connection_is_valid(connection_));
-  auto widget = GetWidget(w);
-  DCHECK(widget);
-    
-  return (gfx::AcceleratedWidget)widget->egl_window();
-}*/
-
-/*bool om::Display::AttemptToResizeAcceleratedWidget(
-    gfx::AcceleratedWidget w, const gfx::Size& bounds) {
-  ui::WindowStateChangeHandler::GetInstance()->SetWidgetState(
-    w, ui::RESIZE, bounds.width(), bounds.height());
-
-  return true;
-}
-
-void om::Display::DestroyWidget(gfx::AcceleratedWidget w) {
-  ui::WindowStateChangeHandler::GetInstance()->SetWidgetState(w,
-    ui::DESTROYED);
-}*/
-
 // See comment in wayland/display.cc
 void om::Display::LookAheadOutputGeometry() {
   auto output_observer =

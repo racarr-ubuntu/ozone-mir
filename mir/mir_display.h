@@ -10,7 +10,7 @@
 #include "ozone/ui/events/window_state_change_handler.h"
 #include "ozone/ui/gfx/ozone_display.h"
 #include "ui/gfx/ozone/surface_factory_ozone.h"
-#include "ui/gfx/ozone/surface_ozone_egl.h" // TODO: Forward decl?
+#include "ui/gfx/ozone/surface_ozone_egl.h"
 
 #include <mir_toolkit/mir_client_library.h>
 
@@ -32,11 +32,7 @@ public:
   virtual intptr_t GetNativeDisplay() OVERRIDE;
 
   virtual gfx::AcceleratedWidget GetAcceleratedWidget() OVERRIDE;
-/*  virtual gfx::AcceleratedWidget RealizeAcceleratedWidget(
-      gfx::AcceleratedWidget w) OVERRIDE;*/
-/*  virtual bool AttemptToResizeAcceleratedWidget(
-      gfx::AcceleratedWidget w, const gfx::Size& bounds) OVERRIDE;*/
-  scoped_ptr<gfx::SurfaceOzoneEGL> CreateEGLSurfaceForWidget(gfx::AcceleratedWidget w);
+  scoped_ptr<gfx::SurfaceOzoneEGL> CreateEGLSurfaceForWidget(gfx::AcceleratedWidget w) OVERRIDE;
   virtual void LookAheadOutputGeometry() OVERRIDE;
   
   // ui::WindowStateChangeHandler
